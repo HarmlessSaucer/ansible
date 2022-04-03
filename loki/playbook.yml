@@ -1,0 +1,117 @@
+---
+  - name: Playbook
+    hosts: localhost
+    connection: local
+    become: yes
+    # become_user: root
+    tasks:
+      - name: Update all packages to their latest version
+        apt:
+          name: "*"
+          state: latest
+
+      - name: Upgrade the OS (apt-get dist-upgrade)
+        apt:
+          upgrade: dist
+
+      - name: Run the equivalent of "apt-get update" as a separate step
+        apt:
+          update_cache: yes
+
+      - name: Add Flathub
+        command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      # - name: Install multiple packages
+      #   flatpak:
+      #     name: com.valvesoftware.Steam
+      #       # - 
+      #       # - 
+      #       # - 
+      #       # - 
+      #       # - 
+      #       # - 
+      #       # - 
+      #       
+      #       # - 
+      #       # - 
+      #       # - com.github.marktext.marktext
+      #       # - 
+      #       # - 
+      #       # - 
+      #       # - 
+      #     state: present
+
+      - name: Install Steam
+        community.general.flatpak:
+          name: com.valvesoftware.Steam
+          state: present
+
+      - name: Install MarkText
+        community.general.flatpak:
+          name: com.github.marktext.marktext
+          state: present
+
+      - name: Install EasySSH
+        community.general.flatpak:
+          name: com.github.muriloventuroso.easyssh
+          state: present
+
+      - name: Install VLC
+        community.general.flatpak:
+          name: org.videolan.VLC
+          state: present
+
+      - name: Install Bitwarden
+        community.general.flatpak:
+          name: com.bitwarden.desktop
+          state: present
+
+      - name: Install Discord
+        community.general.flatpak:
+          name: com.discordapp.Discord
+          state: present
+
+      - name: Install Telegram
+        community.general.flatpak:
+          name: org.telegram.desktop
+          state: present
+
+      - name: Install Signal
+        community.general.flatpak:
+          name: org.signal.Signal
+          state: present
+
+      - name: Install Plexamp
+        community.general.flatpak:
+          name: com.plexamp.Plexamp
+          state: present
+
+      - name: Install Yuzu
+        community.general.flatpak:
+          name: org.yuzu_emu.yuzu
+          state: present
+
+      - name: Install Element
+        community.general.flatpak:
+          name: im.riot.Riot
+          state: present
+
+      - name: Install Mumble
+        community.general.flatpak:
+          name: info.mumble.Mumble
+          state: present
+
+      - name: Install PeaZip
+        community.general.flatpak:
+          name: io.github.peazip.PeaZip
+          state: present
+
+      - name: Install Ferdi
+        community.general.flatpak:
+          name: com.getferdi.Ferdi
+          state: present
+
+      - name: Install Flatseal
+        community.general.flatpak:
+          name: com.github.tchx84.Flatseal
+          state: present
