@@ -1,0 +1,142 @@
+### Setup Docker-Host VM in Proxmox
+- hosts: docker
+  become: yes
+  tasks:
+  # Update and upgrade packages
+  - name: Update and upgrade apt packages
+    become: true
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400 #One day
+
+  # Remove "lxd" snap
+  - name: Remove snaps
+    community.general.snap:
+      name: lxd
+      state: absent
+
+  # Remove "lxd" snap
+  - name: Remove snaps
+    community.general.snap:
+      name: core20
+      state: absent
+
+  # Remove "snapd" snap
+  - name: Remove snaps
+    community.general.snap:
+      name: snapd
+      state: absent
+
+  # Remove /var/cache/snapd
+  - name: Delete /var/cache/snapd
+    file:
+      state: absent
+      path: /var/cache/snapd
+
+  # Remove "snapd" & "snap"
+  - name: Remove "snap" package
+    apt:
+      name: snapd snap
+      state: absent
+      autoremove: yes
+      purge: yes
+
+  # Remove ~/snap
+  - name: Delete ~/snap
+    file:
+      state: absent
+      path: ~/snap
+
+  # Install NFS
+  - name: Install NFS
+    apt:
+      name: nfs-common
+      state: present
+
+  # Install Docker dependencies
+  - name: install Docker dependencies
+    apt:
+      name: "{{item}}"
+      state: present
+      update_cache: yes
+    loop:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+  # Install Docker GPG Key
+  - name: add GPG key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  # Add Docker repository
+  - name: add docker repository to apt
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+
+  # Install Docker
+  - name: install docker
+    apt:
+      name: "{{item}}"
+      state: latest
+      update_cache: yes
+    loop:
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose
+
+  # Add user to "docker" group
+  - name: adding existing user '{{ user }}' to group docker
+    user:
+      name: 'graham'
+      groups: docker
+      append: yes
+
+  # Check that docker started
+  - name: check that docker started
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  # Required packages for using Ansible Docker (for portainer installation below)
+  - name: Install related Ubuntu packages
+    apt:
+      name: "{{ packages }}"
+      state: latest
+    vars:
+      packages:
+        - python3-pip
+        - mc
+
+  - name: Install python packages
+    pip:
+      name: docker
+
+  # Install Portainer
+  # https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#ansible-collections-community-docker-docker-container-module
+  - name: Create portainer container
+    docker_container:
+      name: portainer
+      image: portainer/portainer-ce
+      state: started
+      recreate: yes
+      restart_policy: always
+      published_ports:
+        - "8000:8000"
+        - "9000:9000"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - portainer_data:/data
+
+  # Create a handler to restart Docker
+  # handlers:
+  #   - name: restart docker
+  #     service: 
+  #       name: docker 
+  #       state: restarted
