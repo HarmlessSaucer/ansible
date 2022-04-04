@@ -1,0 +1,7 @@
+# Not sure if required on newer Ubuntu bases?
+- name: Install python-psutil package
+  apt: name=python-psutil
+
+- name: Set Wallpaper to Purple PopOS logo!
+  become_user: jay
+  dconf: key="/org/gnome/desktop/background/picture-uri" value="'file:///usr/share/backgrounds/pop/kate-hazen-pop-retro2.png'
