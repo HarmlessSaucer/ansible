@@ -14,31 +14,36 @@
         apt:
           upgrade: dist
 
+      # Brave Browser
+      - name: Install required packages for Brave Browser
+        apt:
+          pkg:
+          - apt-transport-https
+          - curl
+
+      - name: Add Brave GPG 
+        ansible.builtin.command: sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+      
+      - name: Signed Brave GPG
+        ansible.builtin.command: echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+
       - name: Run the equivalent of "apt-get update" as a separate step
         apt:
           update_cache: yes
 
+      - name: Install Brave Browser
+        apt:
+          name: brave-browser
+          state: present
+
+      # Flatpaks
       - name: Add Flathub
         command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
       # - name: Install multiple packages
       #   flatpak:
-      #     name: com.valvesoftware.Steam
-      #       # - 
-      #       # - 
-      #       # - 
-      #       # - 
-      #       # - 
-      #       # - 
-      #       # - 
-      #       
-      #       # - 
-      #       # - 
-      #       # - com.github.marktext.marktext
-      #       # - 
-      #       # - 
-      #       # - 
-      #       # - 
+      #     name: 
+      #       - com.valvesoftware.Steam
       #     state: present
 
       - name: Install Steam
@@ -115,3 +120,27 @@
         community.general.flatpak:
           name: com.github.tchx84.Flatseal
           state: present
+
+      - name: Install GNOME Boxes
+        community.general.flatpak:
+          name: org.gnome.Boxes
+          state: present
+
+      # QuickEmu
+      - name: Add QuickEmu repository into sources list
+        ansible.builtin.apt_repository:
+          repo: ppa:flexiondotorg/quickemu
+
+      - name: Add QuickGUI repository into sources list
+        ansible.builtin.apt_repository:
+          repo: ppa:yannick-mauray/quickgui
+
+      - name: Run the equivalent of "apt-get update" as a separate step
+        apt:
+          update_cache: yes    
+
+      - name: Install QuickEmu and QuickGUI
+        apt:
+          pkg:
+          - quickgui
+          - quickemu
