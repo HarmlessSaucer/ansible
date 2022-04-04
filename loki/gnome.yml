@@ -5,3 +5,8 @@
 - name: Set Wallpaper to Purple PopOS logo!
   become_user: jay
   dconf: key="/org/gnome/desktop/background/picture-uri" value="'file:///usr/share/backgrounds/pop/kate-hazen-pop-retro2.png'
+
+- name: Set the dock to be small (36)
+  become_user: jay
+  dconf: key="/org/gnome/shell/extensions/dash-to-dock/dash-max-icon-size" value="'file:///usr/share/backgrounds/pop/kate-hazen-pop-retro2.png'
+dash-max-icon-size=36
