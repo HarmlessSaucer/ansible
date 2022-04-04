@@ -4,6 +4,12 @@
     connection: local
     become: yes
     # become_user: root
+    
+    # tasks:
+    #   - include: tasks/flatpak.yml
+    #   - include: tasks/packages.yml
+    #   - include: tasks/gnome.yml
+    
     tasks:
       - name: Update all packages to their latest version
         apt:
