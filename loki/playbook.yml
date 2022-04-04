@@ -56,6 +56,11 @@
           name: com.github.marktext.marktext
           state: present
 
+      - name: Install VSCode
+        community.general.flatpak:
+          name: com.visualstudio.code
+          state: present
+
       - name: Install EasySSH
         community.general.flatpak:
           name: com.github.muriloventuroso.easyssh
