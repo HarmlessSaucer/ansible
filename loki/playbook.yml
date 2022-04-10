@@ -136,6 +136,11 @@
         community.general.flatpak:
           name: org.gnome.Boxes
           state: present
+          
+      - name: Install Raspberry Pi Imager
+        community.general.flatpak:
+          name: org.raspberrypi.rpi-imager
+          state: present
 
       # QuickEmu
       - name: Add QuickEmu repository into sources list
