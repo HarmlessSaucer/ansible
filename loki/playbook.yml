@@ -142,6 +142,11 @@
           name: org.raspberrypi.rpi-imager
           state: present
 
+      - name: Install CoreRenamer
+        community.general.flatpak:
+          name: org.cubocore.CoreRenamer
+          state: present
+
       # QuickEmu
       - name: Add QuickEmu repository into sources list
         ansible.builtin.apt_repository:
